@@ -26,6 +26,14 @@ app.use(nuxt.render)
 server.listen(port, '0.0.0.0')
 console.log('Server listening on localhost:' + port) // eslint-disable-line no-console
 
+// rooms
+const rooms = [
+  { id: 0, title: 'room1' },
+  { id: 1, title: 'room2' },
+  { id: 2, title: 'room3' },
+  { id: 3, title: 'room4' },
+];
+
 // Socket.io
 var messages = []
 io.on('connection', (socket) => {
@@ -34,6 +42,19 @@ io.on('connection', (socket) => {
   })
   socket.on('send-message', function (message) {
     messages.push(message)
+    console.log('socket id:' + socket.id + " / name:" + message.name + " / text:" + message.text)
     socket.broadcast.emit('new-message', message)
   })
+
+  // room 입장
+  socket.on('join-room', (num, name) => {
+    console.log(num, name)
+    console.log(rooms)
+
+    socket.join(rooms[num], () => {
+      console.log(name + ' join a ' + rooms[num].title)
+      io.to(rooms[num]).emit('join-room', num, name)
+    })
+  })
+
 })

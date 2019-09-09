@@ -3,20 +3,18 @@
     <div>
       <logo/>
       <h1 class="title">
-        cryptomarket
+        TALK
       </h1>
       <h2 class="subtitle">
-        Nuxt.js project
+        사용자 선택
       </h2>
       <div class="links">
-        <nuxt-link class="button" :to="{name: 'chat'}">CHAT</nuxt-link>
-        <ul class="users">
-          <li v-for="(user, index) in users" :key="index" class="user">
-            <nuxt-link :to="{ name: 'user-id', params: { id: index }}">
-              {{ user.name }}
-            </nuxt-link>
-          </li>
-        </ul>
+        <!-- user select -->
+        <select v-model="pickUserId" style="margin-bottom:30px;">
+          <option :value="index" v-for="(user, index) in users" :key="index" :selected="index==0">{{user.name}}</option>
+        </select>
+        <br>
+        <button class="button" @click="chat">Chat</button>
       </div>
     </div>
   </section>
@@ -38,6 +36,29 @@
             return {
                 title: 'Users'
             }
+        },
+        data() {
+          return {
+            pickUserId: ''
+          }
+        },
+        methods: {
+          chat: async function() {
+            let {data} = await axios.get('/api/set-user/' + this.pickUserId)
+            if(!data) {
+              alert('user 접속 실패')
+              return;
+            }
+            // user 저장
+            sessionStorage.setItem('id',data.id)
+            sessionStorage.setItem('name',data.data.name)
+
+            alert(`[${data.data.name}]님 채팅 접속 성공`)
+
+
+            // 채팅페이지 이동
+            this.$router.push({ path: '/chat/list' })
+          }
         }
     }
 </script>

@@ -26,4 +26,12 @@ router.get('/users/:id', function (req, res, next) {
     }
 })
 
+/* SET user. */
+router.get('/set-user/:id', function (req, res) {
+    const id = parseInt(req.params.id)
+    console.log(id)
+
+    res.json({id: id, data: users[id]})
+})
+
 module.exports = router;

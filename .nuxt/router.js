@@ -1,62 +1,48 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { interopDefault } from './utils'
+import scrollBehavior from './router.scrollBehavior.js'
+
+const _2db4bdf3 = () => interopDefault(import('..\\pages\\chat\\index.vue' /* webpackChunkName: "pages_chat_index" */))
+const _14027855 = () => interopDefault(import('..\\pages\\chat\\list\\index.vue' /* webpackChunkName: "pages_chat_list_index" */))
+const _0b2fa11b = () => interopDefault(import('..\\pages\\chat\\_id.vue' /* webpackChunkName: "pages_chat__id" */))
+const _dfefcbf0 = () => interopDefault(import('..\\pages\\user\\_id.vue' /* webpackChunkName: "pages_user__id" */))
+const _4bf4508b = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
 
 Vue.use(Router)
 
-const _6ca9121f = () => import('../pages/index.vue' /* webpackChunkName: "pages/index" */).then(m => m.default || m)
-const _ef507444 = () => import('../pages/chat/index.vue' /* webpackChunkName: "pages/chat/index" */).then(m => m.default || m)
-const _1927dd39 = () => import('../pages/user/_id.vue' /* webpackChunkName: "pages/user/_id" */).then(m => m.default || m)
+export const routerOptions = {
+  mode: 'history',
+  base: decodeURI('/'),
+  linkActiveClass: 'nuxt-link-active',
+  linkExactActiveClass: 'nuxt-link-exact-active',
+  scrollBehavior,
 
+  routes: [{
+      path: "/chat",
+      component: _2db4bdf3,
+      name: "chat"
+    }, {
+      path: "/chat/list",
+      component: _14027855,
+      name: "chat-list"
+    }, {
+      path: "/chat/:id",
+      component: _0b2fa11b,
+      name: "chat-id"
+    }, {
+      path: "/user/:id?",
+      component: _dfefcbf0,
+      name: "user-id"
+    }, {
+      path: "/",
+      component: _4bf4508b,
+      name: "index"
+    }],
 
-
-const scrollBehavior = (to, from, savedPosition) => {
-  // SavedPosition is only available for popstate navigations.
-  if (savedPosition) {
-    return savedPosition
-  } else {
-    let position = {}
-    // If no children detected
-    if (to.matched.length < 2) {
-      // Scroll to the top of the page
-      position = { x: 0, y: 0 }
-    }
-    else if (to.matched.some((r) => r.components.default.options.scrollToTop)) {
-      // If one of the children has scrollToTop option set to true
-      position = { x: 0, y: 0 }
-    }
-    // If link has anchor, scroll to anchor by returning the selector
-    if (to.hash) {
-      position = { selector: to.hash }
-    }
-    return position
-  }
+  fallback: false
 }
 
-
-export function createRouter () {
-  return new Router({
-    mode: 'history',
-    base: '/',
-    linkActiveClass: 'nuxt-link-active',
-    linkExactActiveClass: 'nuxt-link-exact-active',
-    scrollBehavior,
-    routes: [
-		{
-			path: "/",
-			component: _6ca9121f,
-			name: "index"
-		},
-		{
-			path: "/chat",
-			component: _ef507444,
-			name: "chat"
-		},
-		{
-			path: "/user/:id?",
-			component: _1927dd39,
-			name: "user-id"
-		}
-    ],
-    fallback: false
-  })
+export function createRouter() {
+  return new Router(routerOptions)
 }

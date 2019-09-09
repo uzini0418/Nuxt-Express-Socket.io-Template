@@ -4,9 +4,11 @@
       <li class="chat page">
         <div class="chatArea">
           <ul class="messages" ref="messages">
-            <li class="message" v-for="(message, index) in messages" :key="index">
-              <i :title="message.date">{{ message.date.split('T')[1].slice(0, -2) }}</i>: {{ message.text }}
-            </li>
+            <no-ssr>
+              <li v-for="(message, index) in messages" :key="index" :id="message.id" :class="['message',sessionId==message.id ? 'my-chat' : 'your-chat']">
+                <i :title="message.name">{{ message.name }}</i>: {{ message.text }} <!-- {{ message.date.split('T')[1].slice(0, -2) }} -->
+              </li>
+            </no-ssr>
           </ul>
         </div>
         <input class="inputMessage" type="text" v-model="message" @keyup.enter="sendMessage" placeholder="Type here..." />
@@ -27,6 +29,14 @@ export default {
       })
     })
   },
+  computed: {
+    sessionId: function() {
+      if (process.client){
+        console.log("sessionid",sessionStorage.getItem('id'))
+        return parseInt(sessionStorage.getItem('id'))
+      }
+    }
+  },
   watch: {
     'messages': 'scrollToBottom'
   },
@@ -43,7 +53,9 @@ export default {
       if (!this.message.trim()) return
       let message = {
         date: new Date().toJSON(),
-        text: this.message.trim()
+        text: this.message.trim(),
+        name: sessionStorage.getItem('name'),
+        id: sessionStorage.getItem('id')
       }
       this.messages.push(message)
       this.message = ''
